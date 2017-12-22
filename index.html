@@ -76,7 +76,6 @@
 </div>
 <script src="./web3.min.js"></script>
 <script>
-const web3 = new Web3(new Web3.providers.HttpProvider("https://api.myetherapi.com/eth"));
 web3.eth.getAccounts(function(e,v){
   if(e) return;
   if(!v[0]) alert("Unlock MetaMask!"); 
