@@ -207,7 +207,7 @@ const prefixMessage = (msgIn) => {
     return `0x${msg.toString('hex')}`;
   };  
  
-       contract.returnAddress.call(prefixMessage("dfc3c5c107b5a89b27b87213f01b01aafce236c02b325ce7d464640690f6265e"),28,["0x84ca107ff8d7bc4e15a849eb4f301e0d1ff223cea79dece43ea072417a8a05b5","0x28b27dfff9dd09d0808810eaa12df3736150e5eac68c3432246b8fe8f82cbbd7"],function(err,val3){
+       contract.returnAddress.call("0xdfc3c5c107b5a89b27b87213f01b01aafce236c02b325ce7d464640690f6265e",28,["0x84ca107ff8d7bc4e15a849eb4f301e0d1ff223cea79dece43ea072417a8a05b5","0x28b27dfff9dd09d0808810eaa12df3736150e5eac68c3432246b8fe8f82cbbd7"],function(err,val3){
         console.log(val3);
       });
  
