@@ -1,0 +1,555 @@
+<html>
+ <style>
+  body {font-family: Arial;}
+
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+  </style>
+<body>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'URL')">Create Short Order</button>
+  <button class="tablinks" onclick="openTab(event, 'DepositCoupon')">Deposit Coupon</button>
+  <button class="tablinks" onclick="openTab(event, 'FillOrder')">Fill Short Order</button>
+   <button class="tablinks" onclick="openTab(event, 'DepositToken')">Deposit Token</button>
+   <button class="tablinks" onclick="openTab(event, 'ExerciseOrder')">Exercise Order</button>
+    <button class="tablinks" onclick="openTab(event, 'WithdrawCoupon')">Withdraw Coupon</button>
+    <button class="tablinks" onclick="openTab(event, 'ReturnCoupon')">Return Coupon Amount</button>
+      <button class="tablinks" onclick="openTab(event, 'ReturnBalance')">Return Balance</button>
+     <button class="tablinks" onclick="openTab(event, 'ReturnAddress')">Return Address</button>
+<button class="tablinks" onclick="openTab(event, 'buyURL')">Create Buy Order (Long)</button>
+<button class="tablinks" onclick="openTab(event, 'ExerciseBuyOrder')">Buy Long Position</button>
+<button class="tablinks" onclick="openTab(event, 'WithdrawLong')">Withdraw Long</button>
+   <button class="tablinks" onclick="openTab(event, 'AdminWithdrawal')">Claim Donations</button>
+
+</div>
+
+<div id="URL" class="tabcontent">
+<div><h3>Create Short Order</h3></div>
+ <div><input type="text" id="tokenAddress" placeholder="Token Address"></input></div>
+<div><input type="text" id="Min" placeholder="Min Amount (Token)"></input></div>
+<div><input type="text" id="Max" placeholder="Max Amount (Token)"></input></div>
+<div><input type="text" id="D" placeholder="Long Window (Block No)"></input></div>
+<div><input type="text" id="M" placeholder="Short Window (Block No)"></input></div>
+<div><input type="text" id="W" placeholder="Overall Window (Block No)"></input></div>
+<div><input type="text" id="C" placeholder="Coupon (ETH)"></input></div>
+<div><input type="text" id="P" placeholder="Token Price (ETH)"></input></div>
+<div><button type="button" class="button" onclick="returnHashParams();">Get Link</button></div>
+<div><textarea style="font-size:10px;font-weight:bold;" id="orderLink" rows="4" cols="50">
+ </textarea></div>
+</div>
+
+<div id="FillOrder" class="tabcontent">
+ <div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+ <div><input type="text" id="fillAmount" placeholder="Amount (ETH)"></input></div>
+ <div><input type="text" id="gasPrice" placeholder="Gas Price (GWEI)"></input></div>
+<div><button type="button" class="button" onclick="fillShortOrder();">Fill Order</button></div>
+</div>
+
+<div id="DepositCoupon" class="tabcontent">
+<div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+<div><input type="text" id="couponGasPrice" placeholder="Gas Price (GWEI)"></input></div>
+<div><button type="button" class="button" onclick="depositCoupon();">Deposit Coupon</button></div>
+</div>
+
+<div id="ExerciseOrder" class="tabcontent">
+<div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+<div><input type="text" id="longGasPrice" placeholder="Gas Price (GWEI)"></input></div>
+<div><button style="padding: 5px 16px;" type="button" class="button" onclick="exerciseOrder();">Exercise Order</button></div>
+</div>
+
+<div id="DepositToken" class="tabcontent">
+<div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+<div><input type="text" id="tokenGasPrice" placeholder="Gas Price (GWEI)"></input></div>
+<div><span><button style="padding: 5px 16px;" type="button" class="button" onclick="tokenApproval();">Approve Token</button><button style="padding: 5px 16px;" type="button" class="button" onclick="tokenFinalize();">Finalize</button></span></div>
+</div>
+
+<div id="WithdrawCoupon" class="tabcontent">
+<div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+<div><input type="text" id="withdrawCouponGasPrice" placeholder="Gas Price (GWEI)"></input></div>
+<div><button style="padding: 5px 16px;" type="button" class="button" onclick="withdrawCoupon();">Withdraw Coupon</button></div>
+</div>
+
+<div id="ReturnCoupon" class="tabcontent">
+<div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+<div><button style="padding: 5px 16px;" type="button" class="button" onclick="returnCoupon();">Return Coupon</button></div>
+</div>
+
+<div id="ReturnBalance" class="tabcontent">
+<div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+<div><button style="padding: 5px 16px;" type="button" class="button" onclick="returnBalance();">Return Balance</button></div>
+</div>
+
+<div id="ReturnAddress" class="tabcontent">
+<div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+<div><button style="padding: 5px 16px;" type="button" class="button" onclick="returnAddress();">Return Address</button></div>
+</div>
+
+<div id="WithdrawLong" class="tabcontent">
+<div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+<div><input type="text" id="longWithdrawGasPrice" placeholder="Gas Price (GWEI)"></input></div>
+<div><button style="padding: 5px 16px;" type="button" class="button" onclick="withdrawLong();">Withdraw Long Balance</button></div>
+</div>
+
+
+<div id="buyURL" class="tabcontent">
+<div><input type="text" id="buyShortOrder" name="link" placeholder="Buy Link"></input></div>
+<div><input type="text" id="buyAmount" placeholder="Amount (ETH)"></input></div>
+<div><input type="text" id="buyExpiry" placeholder="Number Of Blocks Until Expiry"></input></div>
+<div><button type="button" class="button" onclick="returnHashLongParams();">Get Link</button></div>
+<div><textarea style="font-size:10px;font-weight:bold;" id="buyOrderLink" rows="4" cols="50">
+ </textarea></div>
+</div>
+
+<div id="ExerciseBuyOrder" class="tabcontent">
+<div><input type="text" id="exerciseBuyShortOrder" name="buyLink" placeholder="Buy Link"></input></div>
+<div><input type="text" id="buyLongGasPrice" placeholder="Gas Price (GWEI)"></input></div>
+<div><button style="padding: 5px 16px;" type="button" class="button" onclick="exerciseBuyOrder();">Exercise Order</button></div>
+</div>
+
+<div id="AdminWithdrawal" class="tabcontent">
+ <div><input type="text" id="shortOrder" name="link" placeholder="Short Link"></input></div>
+ <div><input type="text" id="adminWithdrawalGasPrice" placeholder="Gas Price (GWEI)"></input></div>
+<div><button type="button" class="button" onclick="withdrawAdminDonation();">Claim Donation</button></div>
+</div>
+
+<script src="./main.js"></script>
+<script>
+(function(){
+  if(window.location.href[29] == "?") {
+    if(!~window.location.href.indexOf("sellerShort")) {
+      let elements = document.getElementsByName("link")
+      for(i=0;i<elements.length;i++) {
+        elements[i].value = decodeURIComponent(window.location.href);
+      }
+    }
+    else {
+      let elements = document.getElementsByName("buyLink")
+      for(i=0;i<elements.length;i++) {
+        elements[i].value = decodeURIComponent(window.location.href);
+      }
+    }
+  }
+})();
+</script>
+<script>
+const contractABI = JSON.parse('[{"constant":false,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"claimDonations","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"returnTokenDepositState","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"returnBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"}],"name":"returnHash","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"returnCoupon","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"returnTokenBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"exerciseLong","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"amount","type":"uint256"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"tokenFulfillmentDeposit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"nonActivationShortWithdrawal","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_user","type":"address"},{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"returnUserBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_admin","type":"address"}],"name":"changeAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"placeLong","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"sellerShort","type":"address[2]"},{"name":"amountNonceExpiry","type":"uint256[3]"},{"name":"v","type":"uint8"},{"name":"hashRS","type":"bytes32[3]"}],"name":"buyLong","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"name":"orderHash","type":"bytes32"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"returnLongAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":true,"inputs":[{"name":"seller","type":"address"},{"name":"amountNonceExpiry","type":"uint256[3]"}],"name":"returnHashLong","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"pure","type":"function"},{"constant":false,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"depositCoupon","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"tokenUser","type":"address[2]"},{"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"nonActivationWithdrawal","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"orderHash","type":"bytes32"},{"name":"v","type":"uint8"},{"name":"rs","type":"bytes32[2]"}],"name":"returnAddress","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"pure","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tokenUser","type":"address[2]"},{"indexed":false,"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"indexed":false,"name":"v","type":"uint8"},{"indexed":false,"name":"rs","type":"bytes32[2]"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"TokenFulfillment","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tokenUser","type":"address[2]"},{"indexed":false,"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"indexed":false,"name":"v","type":"uint8"},{"indexed":false,"name":"rs","type":"bytes32[2]"},{"indexed":false,"name":"value","type":"uint256"}],"name":"CouponDeposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tokenUser","type":"address[2]"},{"indexed":false,"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"indexed":false,"name":"v","type":"uint8"},{"indexed":false,"name":"rs","type":"bytes32[2]"},{"indexed":false,"name":"value","type":"uint256"}],"name":"LongPlace","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"sellerShort","type":"address[2]"},{"indexed":false,"name":"amountNonceExpiry","type":"uint256[3]"},{"indexed":false,"name":"v","type":"uint8"},{"indexed":false,"name":"hashRS","type":"bytes32[3]"},{"indexed":false,"name":"value","type":"uint256"}],"name":"LongBought","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tokenUser","type":"address[2]"},{"indexed":false,"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"indexed":false,"name":"v","type":"uint8"},{"indexed":false,"name":"rs","type":"bytes32[2]"},{"indexed":false,"name":"couponAmount","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"TokenLongExercised","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tokenUser","type":"address[2]"},{"indexed":false,"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"indexed":false,"name":"v","type":"uint8"},{"indexed":false,"name":"rs","type":"bytes32[2]"},{"indexed":false,"name":"couponAmount","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"EthLongExercised","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tokenUser","type":"address[2]"},{"indexed":false,"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"indexed":false,"name":"v","type":"uint8"},{"indexed":false,"name":"rs","type":"bytes32[2]"},{"indexed":false,"name":"coupon","type":"uint256"},{"indexed":false,"name":"balance","type":"uint256"}],"name":"DonationClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tokenUser","type":"address[2]"},{"indexed":false,"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"indexed":false,"name":"v","type":"uint8"},{"indexed":false,"name":"rs","type":"bytes32[2]"},{"indexed":false,"name":"coupon","type":"uint256"}],"name":"NonActivationWithdrawal","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"tokenUser","type":"address[2]"},{"indexed":false,"name":"minMaxDMWCPNonce","type":"uint256[8]"},{"indexed":false,"name":"v","type":"uint8"},{"indexed":false,"name":"rs","type":"bytes32[2]"},{"indexed":false,"name":"balance","type":"uint256"}],"name":"ActivationWithdrawal","type":"event"}]');
+const tokenABI = JSON.parse('[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"supply","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"success","type":"bool"}],"type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"remaining","type":"uint256"}],"type":"function"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_from","type":"address"},{"indexed":true,"name":"_to","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"_owner","type":"address"},{"indexed":true,"name":"_spender","type":"address"},{"indexed":false,"name":"_value","type":"uint256"}],"name":"Approval","type":"event"}]'); 
+const contract = web3.eth.contract(contractABI).at("0x2268003d92FF03Be6ca6dA029F8D8127FD2F617e"); 
+ 
+      contract.returnAddress.call(prefixMessage("dfc3c5c107b5a89b27b87213f01b01aafce236c02b325ce7d464640690f6265e"),28,["0x84ca107ff8d7bc4e15a849eb4f301e0d1ff223cea79dece43ea072417a8a05b5","0x28b27dfff9dd09d0808810eaa12df3736150e5eac68c3432246b8fe8f82cbbd7"],function(err,val3){
+        console.log(val3);
+      });
+
+const openTab = (evt, idName) => {
+    let i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(idName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+const emptyCheck = (id) => {
+  let inputs = document.getElementById(id).getElementsByTagName('input')
+  for (i = 0; i < inputs.length; i++) {
+    if(inputs[i].value=="" || inputs[i].value==undefined){
+      alert("Oops! Empty Input.")
+      return false
+      break;
+     }
+   }
+  return true;
+};
+ 
+const prefixMessage = (msgIn) => {
+    let msg = msgIn;
+    console.log("passed to personal.sign: ",msg);
+    msg = new Buffer(msg.slice(2), 'hex');
+    msg = Buffer.concat([new Buffer(`\x19Ethereum Signed Message:\n${msg.length.toString()}`),msg]);
+    msg = web3.sha3(`0x${msg.toString('hex')}`, { encoding: 'hex' });
+    msg = new Buffer(msg.slice(2), 'hex');
+    return `0x${msg.toString('hex')}`;
+  };  
+ 
+const returnHashParams = () => { 
+  if(!emptyCheck("URL")) return;
+  let tokenAddress = document.getElementById("tokenAddress").value;
+  let minAmount = parseInt(web3.toWei(document.getElementById("Min").value));
+  let maxAmount = parseInt(web3.toWei(document.getElementById("Max").value));
+  let longWindow = parseInt(document.getElementById("D").value);
+  let shortWindow = parseInt(document.getElementById("M").value);
+  let overralWindow = parseInt(document.getElementById("W").value);
+  let coupon = parseInt(web3.toWei(document.getElementById("C").value));
+  let tokenPrice = parseInt(web3.toWei(document.getElementById("P").value));
+  let nonce = parseInt(Math.random().toString().slice(3));
+  let orderParamsArr = [minAmount,maxAmount,longWindow,shortWindow,overralWindow,coupon,tokenPrice,nonce];
+  console.log("arr: ",orderParamsArr);
+  contract.returnHash.call([tokenAddress,web3.eth.accounts[0]],orderParamsArr,function(err,val) {
+    console.log("hash: ",val);
+    web3.personal.sign(val,web3.eth.accounts[0],
+      function(err,val2) {
+      sig = val2.substr(2, val2.length);
+      let r = '0x' + sig.substr(0, 64);
+      let s = '0x' + sig.substr(64, 64);
+      let v = parseInt('0x' + sig.substr(128, 130));
+      console.log("v: ",v," r: ",r," s: ",s);
+      let orderJson = JSON.stringify({'tokenUser':[tokenAddress,web3.eth.accounts[0]],'minMaxDMWCPNonce':[minAmount,maxAmount,longWindow,shortWindow,overralWindow,coupon,tokenPrice,nonce],'r':r,'s':s,'v':v});
+      document.getElementById("orderLink").innerText = `https://tokentrade.github.io/?order=${orderJson}`;
+      contract.returnAddress.call(prefixMessage(val),v,[r,s],function(err,val3){
+        if(val3 == web3.eth.accounts[0]){
+          alert("Order Successfull Generated");
+          console.log(val2,"val3: ",val3);
+        }
+      });
+    });
+  });
+}; 
+ 
+const depositCoupon = () => {
+  if(!emptyCheck("DepositCoupon")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("DepositCoupon").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let gas = parseInt(document.getElementById("couponGasPrice").value)*1e9;
+  let amount = orderJSON['minMaxDMWCPNonce'][5];
+  let orderArr = [tokenUser,minMaxDMWCPNonce];
+  console.log(orderArr[0],orderArr[1],v,[r,s]);
+  let myData = contract.depositCoupon.getData(orderArr[0],orderArr[1],v,[r,s]);
+  let Tx = {from: web3.eth.accounts[0],to: contract.address,value: amount,data: myData,gasPrice:gas};
+  web3.eth.sendTransaction(Tx, function(err, transactionHash) {
+    if (!err) {
+      alert("Coupon Deposited");
+      console.log("Transaction Successful. Transaction Hash: " + transactionHash);
+    }
+  });  
+ };
+ 
+const fillShortOrder = () => {
+  if(!emptyCheck("FillOrder")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("FillOrder").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let gas = parseInt(document.getElementById("gasPrice").value)*1e9;
+  let amount = parseInt(web3.toWei(document.getElementById("fillAmount").value));
+  let orderArr = [tokenUser,minMaxDMWCPNonce];
+  let myData = contract.placeLong.getData(orderArr[0],orderArr[1],v,[r,s]);
+  let Tx = {from: web3.eth.accounts[0],to: contract.address,value: amount,data: myData,gasPrice:gas};
+  web3.eth.sendTransaction(Tx, function(err, transactionHash) {
+    if (!err) {
+      alert("Order Filled");
+      console.log("Transaction Successful. Transaction Hash: " + transactionHash);
+    }
+  });  
+ };
+ 
+ const exerciseOrder = () => {
+  if(!emptyCheck("ExerciseOrder")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("ExerciseOrder").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let gas = parseInt(document.getElementById("longGasPrice").value)*1e9;
+  let orderArr = [tokenUser,minMaxDMWCPNonce];
+  let myData = contract.exerciseLong.getData(orderArr[0],orderArr[1],v,[r,s]);
+  let Tx = {from: web3.eth.accounts[0],to: contract.address,data: myData,gasPrice:gas};
+  web3.eth.sendTransaction(Tx, function(err, transactionHash) {
+    if (!err) {
+      alert("Order Filled");
+      console.log("Transaction Successful. Transaction Hash: " + transactionHash);
+    }
+  });  
+ };
+ 
+const tokenApproval = () => {
+  if(!emptyCheck("DepositToken")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  contract.returnBalance.call(tokenUser,minMaxDMWCPNonce,v,[r,s],function(err, val) {
+    if(!err) {
+      let gas = parseInt(document.getElementById("tokenGasPrice").value)*1e9;
+      let amount = val*minMaxDMWCPNonce[6];
+      let contract = web3.eth.contract(tokenABI).at(tokenUser[0]);
+      let mainContractAddress = tokenUser[0];
+      let myData = contract.approve.getData(mainContractAddress,amount); 
+      let Tx = {from: web3.eth.accounts[0],to: mainContractAddress,data: myData,gasPrice:gas};
+      web3.eth.sendTransaction(Tx, function(err, transactionHash) {
+        if (!err) {
+          alert("Token Approved");
+          console.log("Transaction Successful. Transaction Hash: " + transactionHash);
+        }
+      }); 
+    }
+  }); 
+ }; 
+ 
+ const tokenFinalize = () => {
+  if(!emptyCheck("DepositToken")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  contract.returnBalance.call(tokenUser,minMaxDMWCPNonce,v,[r,s],function(err, val) {
+    let shortLink = document.getElementById("shortOrder").value;
+    document.getElementById("DepositToken").getElementsByTagName("input").value = "";
+    let orderJSON = JSON.parse(shortLink.slice(36));
+    let v = orderJSON['v'];
+    let r = orderJSON['r'];
+    let s = orderJSON['s'];
+    let gas = parseInt(document.getElementById("tokenGasPrice").value)*1e9;
+    let amount = val*minMaxDMWCPNonce[6];
+    let orderArr = [tokenUser,minMaxDMWCPNonce];
+    let myData = contract.tokenFulfillmentDeposit.getData(orderArr[0],amount,orderArr[1],v,[r,s]);
+    let Tx = {from: web3.eth.accounts[0],to: contract.address,data: myData,gasPrice:gas};
+    web3.eth.sendTransaction(Tx, function(err, transactionHash) {
+      if (!err) {
+        alert("Token Deposited!");
+        console.log("Transaction Successful. Transaction Hash: " + transactionHash);
+      }
+    });  
+  });
+ };
+ 
+ const withdrawAdminDonation = () => {
+  if(!emptyCheck("AdminWithdrawal")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("AdminWithdrawal").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let gas = parseInt(document.getElementById("adminWithdrawalGasPrice").value)*1e9;
+  let orderArr = [tokenUser,minMaxDMWCPNonce];
+  let myData = contract.claimDonations.getData(orderArr[0],orderArr[1],v,[r,s]);
+  let Tx = {from: web3.eth.accounts[0],to: contract.address,data: myData,gasPrice:gas};
+  web3.eth.sendTransaction(Tx, function(err, transactionHash) {
+    if (!err) {
+      alert("Order Filled");
+      console.log("Transaction Successful. Transaction Hash: " + transactionHash);
+    }
+  });  
+ };
+ 
+const withdrawCoupon = () => {
+  if(!emptyCheck("WithdrawCoupon")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("WithdrawCoupon").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let gas = parseInt(document.getElementById("withdrawCouponGasPrice").value)*1e9;
+  let orderArr = [tokenUser,minMaxDMWCPNonce];
+  let myData = contract.nonActivationShortWithdrawal.getData(orderArr[0],orderArr[1],v,[r,s]);
+  let Tx = {from: web3.eth.accounts[0],to: contract.address,data: myData,gasPrice:gas};
+  web3.eth.sendTransaction(Tx, function(err, transactionHash) {
+    if (!err) {
+      alert("Token Deposited!");
+      console.log("Transaction Successful. Transaction Hash: " + transactionHash);
+    }
+  });  
+ };
+ 
+ const returnCoupon = () => {
+  if(!emptyCheck("ReturnCoupon")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("ReturnCoupon").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let orderArr = [tokenUser,minMaxDMWCPNonce];
+  contract.returnCoupon.call(orderArr[0],orderArr[1],v,[r,s],function(err, val) {
+    if (!err) {
+      alert("Coupon Amount: " + val/1e18);
+    }
+  });
+ };
+
+ const returnBalance = () => {
+  if(!emptyCheck("ReturnBalance")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("ReturnBalance").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let orderArr = [tokenUser,minMaxDMWCPNonce];
+  contract.returnBalance.call(orderArr[0],orderArr[1],v,[r,s],function(err, val) {
+    if (!err) {
+      alert("Contract Balance: " + val/1e18);
+    }
+  });
+ }; 
+ 
+const returnAddress = () => {
+  if(!emptyCheck("ReturnAddress")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("ReturnAddress").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let orderArr = [tokenUser,minMaxDMWCPNonce];
+  contract.returnHash.call([tokenUser[0],tokenUser[1]],minMaxDMWCPNonce,function(err,val) {
+    console.log("hash: ",val);
+    contract.returnAddress.call(prefixMessage(val),v,[r,s],function(err2, val2) {
+      if (!err) {
+        alert("Order Creator: " + val2);
+      }
+    });
+  }); 
+}
+const withdrawLong = () => {
+  if(!emptyCheck("WithdrawLong")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("WithdrawLong").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let gas = parseInt(document.getElementById("longWithdrawGasPrice").value)*1e9;
+  let orderArr = [tokenUser,minMaxDMWCPNonce];
+  let myData = contract.nonActivationWithdrawal.getData(orderArr[0],orderArr[1],v,[r,s]);
+  let Tx = {from: web3.eth.accounts[0],to: contract.address,data: myData,gasPrice:gas};
+  web3.eth.sendTransaction(Tx, function(err, transactionHash) {
+    if (!err) {
+      alert("Token Deposited!");
+      console.log("Transaction Successful. Transaction Hash: " + transactionHash);
+    }
+  });  
+ };
+ 
+ const returnHashLongParams = () => { 
+  if(!emptyCheck("buyURL")) return;
+  let shortLink = document.getElementById("shortOrder").value;
+  document.getElementById("buyURL").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let tokenUser = orderJSON['tokenUser'];
+  let minMaxDMWCPNonce = orderJSON['minMaxDMWCPNonce'];
+  let v = orderJSON['v'];
+  let r = orderJSON['r'];
+  let s = orderJSON['s'];
+  let buyAmount = parseInt(web3.toWei(document.getElementById("buyAmount").value));
+  let buyExpiry = parseInt(document.getElementById("buyExpiry").value);
+  let nonce = parseInt(Math.random().toString().slice(3));
+  let amountNonceExpiry = [buyAmount,nonce,buyExpiry];
+  contract.returnHashLong.call(web3.eth.accounts[0],amountNonceExpiry,function(err,val) {
+    console.log("hash: ",val);
+    web3.personal.sign(val,web3.eth.accounts[0],
+      function(err,val2) {
+      sig = val2.substr(2, val2.length);
+      let r = '0x' + sig.substr(0, 64);
+      let s = '0x' + sig.substr(64, 64);
+      let v = parseInt('0x' + sig.substr(128, 130));
+      console.log("v: ",v," r: ",r," s: ",s);
+      amountNonceExpiryDM = [buyAmount,nonce,buyExpiry,minMaxDMWCPNonce[3],minMaxDMWCPNonce[4]];
+      let orderJson = JSON.stringify({'sellerShort':[web3.eth.accounts[0],tokenUser[1]],'amountNonceExpiryDM':amountNonceExpiryDM,'hashRS':[val,r,s], 'v':v});
+      document.getElementById("buyOrderLink").innerText = `https://tokentrade.github.io/?order=${orderJson}`;
+      contract.returnLongAddress.call(prefixMessage(val),v,[r,s],function(err,val3){
+        if(val3 == web3.eth.accounts[0]){
+          alert("Order Successfull Generated");
+          console.log(val2,"val3: ",val3);
+        }
+      });
+    });
+  });
+}; 
+
+const exerciseBuyOrder = () => {
+  if(!emptyCheck("ExerciseBuyOrder")) return;
+  let shortLink = document.getElementById("exerciseBuyShortOrder").value;
+  document.getElementById("ExerciseBuyOrder").getElementsByTagName("input").value = "";
+  let orderJSON = JSON.parse(shortLink.slice(36));
+  let sellerShort = orderJSON['sellerShort'];
+  let amountNonceExpiryDM = orderJSON['amountNonceExpiryDM'];
+  let v = orderJSON['v'];
+  let hashRS = orderJSON['hashRS'];
+  let longGasPrice = parseInt(document.getElementById("buyLongGasPrice").value)*1e9;
+  let orderArr = [sellerShort,amountNonceExpiryDM];
+  let myData = contract.buyLong.getData(orderArr[0],orderArr[1],v,hashRS);
+  let Tx = {from: web3.eth.accounts[0],to: contract.address,data: myData,gasPrice:longGasPrice};
+  web3.eth.sendTransaction(Tx, function(err, transactionHash) {
+    if (!err) {
+      alert("Order Filled");
+      console.log("Transaction Successful. Transaction Hash: " + transactionHash);
+    }
+  });  
+ };
+ 
+console.log(web3);
+</script>
+</body>
+</html>
